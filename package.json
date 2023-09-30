@@ -1,0 +1,25 @@
+{
+  "name": "ColumbienDirektMasterSheetControlPanel",
+  "version": "1.0.0",
+  "description": "A java FX/ Spring Boot application that allows manipulating and working with the ColumbienDirekt e.V. Excel master sheet.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Walnussbaer/ColumbienDirektMasterSheetControlPanel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Walnussbaer/ColumbienDirektMasterSheetControlPanel/issues"
+  },
+  "homepage": "https://github.com/Walnussbaer/ColumbienDirektMasterSheetControlPanel#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "3.0.3",
+    "prettier-plugin-java": "^2.3.1"
+  }
+}

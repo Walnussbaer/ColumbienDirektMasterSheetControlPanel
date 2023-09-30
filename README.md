@@ -4,3 +4,8 @@ A java FX/ Spring Boot application that allows manipulating and working with the
 ## Helpful links
 - https://blog.jetbrains.com/idea/2019/11/tutorial-reactive-spring-boot-a-javafx-spring-boot-application/ 
 - https://blog.jetbrains.com/idea/2019/11/tutorial-reactive-spring-boot-a-javafx-line-chart/
+
+## TODO
+
+- add prettier
+- upgrade to Node Version 14

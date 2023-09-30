@@ -44,6 +44,20 @@
       <version>${javafx.version}</version>
     </dependency>
 
+    <!-- manipulate office files such as Excel -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>5.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.2.0</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>
