@@ -7,5 +7,3 @@ A java FX/ Spring Boot application that allows manipulating and working with the
 
 ## TODO
 
-- add prettier
-- upgrade to Node Version 14
