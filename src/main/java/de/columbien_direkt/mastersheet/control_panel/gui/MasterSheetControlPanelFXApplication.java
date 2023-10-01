@@ -1,98 +1,110 @@
 package de.columbien_direkt.mastersheet.control_panel.gui;
 
 import de.columbien_direkt.mastersheet.control_panel.core.MasterSheetControlPanelApplication;
-import de.columbien_direkt.mastersheet.control_panel.core.exception.MasterSheetOperationException;
 import de.columbien_direkt.mastersheet.control_panel.core.sample.MasterSheetSampleService;
 import de.columbien_direkt.mastersheet.control_panel.core.service.MasterSheetConnectionService;
 import de.columbien_direkt.mastersheet.control_panel.gui.event.StageReadyEvent;
-import java.io.File;
-import java.util.List;
+import de.columbien_direkt.mastersheet.control_panel.gui.view.MasterSheetConnectionConfigurationView;
+import de.columbien_direkt.mastersheet.control_panel.gui.view.WelcomeView;
+import jakarta.annotation.Nonnull;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 public class MasterSheetControlPanelFXApplication extends Application {
 
-  private ConfigurableApplicationContext applicationContext;
+    @Nonnull
+    private final ConfigurableApplicationContext applicationContext;
 
-  @Override
-  public void start(Stage stage) {
-    Label label = new Label("POC MasterSheet ControlPanel");
-    TextField inputField = new TextField();
-    Button button = new Button("Mastersheet wählen");
-    Button testConnection = new Button("Verbindung prüfen");
-    Button sheetNameButton = new Button("Zeige Sheetnamen");
-    ListView<String> sheetNamesList = new ListView<>(
-      FXCollections.observableArrayList()
-    );
+    @Nonnull
+    private final VBox mainLayout;
 
-    FileChooser excelFileChooser = new FileChooser();
+    @Nonnull
+    private Node activeView;
 
-    button.setOnAction(event -> {
-      File masterSheetFile = excelFileChooser.showOpenDialog(stage);
+    public MasterSheetControlPanelFXApplication() {
+        this.activeView = new WelcomeView();
 
-      if (masterSheetFile != null) {
-        inputField.setText(masterSheetFile.getAbsolutePath());
-      }
+        applicationContext =
+            new SpringApplicationBuilder(
+                MasterSheetControlPanelApplication.class
+            )
+                .run();
 
-      getMasterSheetConnectionService().setMasterSheetFile(masterSheetFile);
-    });
+        this.mainLayout = new VBox();
+    }
 
-    sheetNameButton.setOnAction(event -> {
-      try {
-        List<String> sheetNames = getMasterSheetSampleService().getSheetNames();
+    @Override
+    public void start(Stage stage) {
+        Label titleLabel = new Label("MasterSheet ControlPanel");
+        titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setStyle("-fx-font-weight: bold");
 
-        sheetNamesList.setItems(FXCollections.observableArrayList(sheetNames));
-      } catch (MasterSheetOperationException masterSheetOperationException) {
-        System.out.println(masterSheetOperationException.getMessage());
-      }
-    });
+        /* first menu */
+        Menu mainMenu = new Menu("Datei");
 
-    VBox verticalBox = new VBox(
-      label,
-      button,
-      inputField,
-      testConnection,
-      sheetNameButton,
-      sheetNamesList
-    );
-    verticalBox.setAlignment(Pos.CENTER);
+        MenuItem homeMenuItem = new MenuItem("Startseite");
+        homeMenuItem.setOnAction(event -> {
+            changeActiveView(new WelcomeView());
+        });
 
-    Scene scene = new Scene(verticalBox, 640, 480);
-    stage.setScene(scene);
+        MenuItem configureMasterSheetMenuItem = new MenuItem(
+            "Mastersheet konfigurieren"
+        );
+        configureMasterSheetMenuItem.setOnAction(event -> {
+            changeActiveView(
+                new MasterSheetConnectionConfigurationView(
+                    getMasterSheetConnectionService(),
+                    getMasterSheetSampleService()
+                )
+            );
+        });
+        mainMenu.getItems().addAll(homeMenuItem, configureMasterSheetMenuItem);
 
-    applicationContext.publishEvent(new StageReadyEvent(stage));
-  }
+        /* second menu */
+        Menu actionsMenu = new Menu("Aktionen");
+        actionsMenu
+            .getItems()
+            .addAll(new MenuItem("Transaktionsdaten generieren"));
 
-  @Override
-  public void init() {
-    applicationContext =
-      new SpringApplicationBuilder(MasterSheetControlPanelApplication.class)
-        .run();
-  }
+        MenuBar mainMenuBar = new MenuBar(mainMenu, actionsMenu);
 
-  private MasterSheetSampleService getMasterSheetSampleService() {
-    return this.applicationContext.getBean(MasterSheetSampleService.class);
-  }
+        this.mainLayout.getChildren()
+            .addAll(titleLabel, mainMenuBar, this.activeView);
+        this.mainLayout.setAlignment(Pos.TOP_CENTER);
 
-  private MasterSheetConnectionService getMasterSheetConnectionService() {
-    return this.applicationContext.getBean(MasterSheetConnectionService.class);
-  }
+        Scene scene = new Scene(this.mainLayout, 640, 480);
+        stage.setScene(scene);
 
-  @Override
-  public void stop() {
-    applicationContext.close();
-    Platform.exit();
-  }
+        applicationContext.publishEvent(new StageReadyEvent(stage));
+    }
+
+    @Override
+    public void stop() {
+        this.applicationContext.close();
+        Platform.exit();
+    }
+
+    private void changeActiveView(Node newView) {
+        this.mainLayout.getChildren().remove(this.activeView);
+        this.mainLayout.getChildren().add(newView);
+        this.activeView = newView;
+    }
+
+    private MasterSheetConnectionService getMasterSheetConnectionService() {
+        return this.applicationContext.getBean(
+                MasterSheetConnectionService.class
+            );
+    }
+
+    private MasterSheetSampleService getMasterSheetSampleService() {
+        return this.applicationContext.getBean(MasterSheetSampleService.class);
+    }
 }
