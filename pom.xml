@@ -13,7 +13,7 @@
 
   <groupId>de.columbien-direkt</groupId>
   <artifactId>MasterSheetControlPanel</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>MasterSheetControlPanel</name>
 
@@ -37,11 +37,26 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Java FX -->
+    <!-- Java FX (platform independent -->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>${javafx.version}</version>
+      <classifier>win</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+      <classifier>linux</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+      <classifier>mac</classifier>
     </dependency>
 
     <!-- manipulate office files such as Excel -->
@@ -73,7 +88,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
-          <mainClass>MasterSheetControlPanelFXApplication</mainClass>
+          <mainClass>de.columbien_direkt.mastersheet.control_panel.core.MasterSheetControlPanelApplication</mainClass>
         </configuration>
       </plugin>
 

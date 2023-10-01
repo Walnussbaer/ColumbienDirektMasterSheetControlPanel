@@ -1,4 +1,4 @@
-package de.columbien_direkt;
+package de.columbien_direkt.mastersheet.control_panel.core;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
